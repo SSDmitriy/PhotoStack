@@ -1,0 +1,6 @@
+@PhotoStack.API_HostAddress = http://localhost:5281
+
+GET {{PhotoStack.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
