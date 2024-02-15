@@ -2,7 +2,7 @@
 {
     public class Image
     {
-        public Guid PhotoCardId { get; set; }
+        public Guid Id { get; set; }
         public string FilePath { get; set; } = string.Empty;
     }
 }

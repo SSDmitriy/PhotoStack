@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PhotoStack.Domain.Models;
 using PhotoStack.Persistence.Entities;
+using PhotoStack.Domain.Interfaces;
 
 namespace PhotoStack.Persistence.Repositories
 {
-    public class PhotoCardsRepository
+    public class PhotoCardsRepository : IPhotoCardsRepository
     {
         private readonly PhotoStackContext _photoStackContext;
 
@@ -11,17 +13,19 @@ namespace PhotoStack.Persistence.Repositories
         {
             _photoStackContext = photoStackContext;
         }
-        public async Task Add(Guid id, string title, decimal price, string description)
+
+        public async Task Add(PhotoCard photoCard)
         {
             var photoCardEntity = new PhotoCardEntity
             {
-                Id = id,
-                Title = title,
-                Price = price,
-                Description = description
+                Id = photoCard.Id,
+                Title = photoCard.Title,
+                Price = photoCard.Price,
+                Description = photoCard.Description
             };
 
             await _photoStackContext.PhotoCards.AddAsync(photoCardEntity);
+
 
             //обязательно вызывать метод save
             await _photoStackContext.SaveChangesAsync();
@@ -31,6 +35,7 @@ namespace PhotoStack.Persistence.Repositories
         {
             //db context --> db set --> method()
             var card = await _photoStackContext.PhotoCards
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             return card;
@@ -39,11 +44,12 @@ namespace PhotoStack.Persistence.Repositories
         //получить ВСЕ карточки
         public async Task<List<PhotoCardEntity>> Get()
         {
-            var cards = await _photoStackContext.PhotoCards.ToListAsync();
+            var cards = await _photoStackContext.PhotoCards
+                .AsNoTracking()
+                .ToListAsync();
 
             return cards;
         }
-
     }
 }
 

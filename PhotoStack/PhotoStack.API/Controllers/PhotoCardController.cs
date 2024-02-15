@@ -1,43 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PhotoStack.API.Contracts;
+using PhotoStack.Application;
 using PhotoStack.Domain.Models;
-
 namespace PhotoStack.API.Controllers
 {
     [ApiController]
-    [Route("v1/[controller]")]
-    public class GetPhotoCardController : ControllerBase
+    [Route("[controller]")]
+    public class PhotoCardController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult Get()
+        private readonly PhotoCardsService _photoCardsService;
+        public PhotoCardController(PhotoCardsService photoCardsService)
         {
-            var photoCard = new PhotoCard(
+           _photoCardsService = photoCardsService;
+        }
+        
+
+        //POST: localhost:5000/photocard
+        [HttpPost]
+        public async Task<ActionResult> Create([FromForm]CreatePhotoRequest request)
+        {
+
+            PhotoCard photoCard = new(
                 Guid.NewGuid(),
-                "",
-                1.99m,
-                "",
+                request.Title,
+                request.Price,
+                request.Description,
                 new Image());
 
-            return Ok(photoCard);
+            await _photoCardsService.Create(photoCard);
+
+            return Created();
         }
+
     }
-
-    [ApiController]
-    [Route("v2/[controller]")]
-    public class PutPhotoCardController : ControllerBase
-    {
-        [HttpGet]
-        public ActionResult Get()
-        {
-            var photoCard = new PhotoCard(
-                Guid.NewGuid(),
-                "",
-                99.77m,
-                "",
-                new Image());
-
-            return Ok(photoCard);
-
-        }
-    }
-
 }

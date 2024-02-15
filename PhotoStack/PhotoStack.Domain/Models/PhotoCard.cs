@@ -13,16 +13,14 @@
             Title = title;
             Price = price;
             Description = description;
-            Image = image;           
+            Image = image;
         }
 
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public decimal Price { get; set; } = decimal.Zero;
         public string? Description { get; set; }
-        public Image Image { get; set; }
-
-        
+        public Image Image { get; set; }       
 
 
     }
