@@ -3,20 +3,20 @@ using PhotoStack.Domain.Models;
 
 namespace PhotoStack.Application
 {
-    public class PhotoCardsService
+    public class PhotoCardsService : IPhotoCardsService
     {
         private readonly IPhotoCardsRepository _photoCardsRepository;
 
-        //метод для создания фото
         public PhotoCardsService(IPhotoCardsRepository photoCardsRepository)
         {
             _photoCardsRepository = photoCardsRepository;
         }
 
+        //метод для создания фото
         public async Task Create(PhotoCard photoCard)
         {
             await _photoCardsRepository.Add(photoCard);
         }
-        
+
     }
 }

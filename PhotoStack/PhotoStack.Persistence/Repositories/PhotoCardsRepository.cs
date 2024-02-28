@@ -24,6 +24,7 @@ namespace PhotoStack.Persistence.Repositories
                 Description = photoCard.Description
             };
 
+            // dbCONTEXT->dbSET->вызов метода
             await _photoStackContext.PhotoCards.AddAsync(photoCardEntity);
 
 
@@ -35,7 +36,7 @@ namespace PhotoStack.Persistence.Repositories
         {
             //db context --> db set --> method()
             var card = await _photoStackContext.PhotoCards
-                .AsNoTracking()
+                .AsNoTracking() //НЕ отслеживать средствами EF -для повышения производительности. Т.к. это Get-метод, только запрашивает данные
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             return card;

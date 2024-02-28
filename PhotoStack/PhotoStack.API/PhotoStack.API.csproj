@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -21,6 +21,11 @@
   <ItemGroup>
     <ProjectReference Include="..\PhotoStack.Domain\PhotoStack.Domain.csproj" />
     <ProjectReference Include="..\PhotoStack.Persistence\PhotoStack.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="StaticFiles\Images\" />
+    <Folder Include="StaticFiles\" />
   </ItemGroup>
 
 </Project>
