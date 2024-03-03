@@ -43,7 +43,7 @@ namespace PhotoStack.Persistence.Repositories
         }
 
         //получить ВСЕ карточки
-        public async Task<List<PhotoCardEntity>> Get()
+        public async Task<List<PhotoCardEntity>> Get(int pageNumber, int pageSize)
         {
             var cards = await _photoStackContext.PhotoCards
                 .AsNoTracking()
