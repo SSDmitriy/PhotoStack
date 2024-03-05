@@ -19,7 +19,7 @@ namespace PhotoStack.Application
         }
 
         //метод вернуть страницу с фотами
-        async Task<List<PhotoCard>> IPhotoCardsService.Get(int pageNumber, int pageSize)
+        public async Task<List<PhotoCard>> Get(int pageNumber, int pageSize)
         {
             return await _photoCardsRepository.Get(pageNumber, pageSize);
         }

@@ -74,7 +74,6 @@ namespace PhotoStack.API.Controllers
             int _pageNumber = request.pageNumber;
             int _pageSize = request.pageSize;
 
-
             if (_pageNumber < 0)
             {
                 return BadRequest("Запрашиваемая страница не может быть меньше 0");
@@ -85,9 +84,7 @@ namespace PhotoStack.API.Controllers
                 return BadRequest("Размер запрашиваемой страницы должен быть в пределах 1..20");
             }
 
-            var result = new List<PhotoCard>();
-
-            result = await _photoCardsService.Get(_pageNumber, _pageSize);
+            var result = await _photoCardsService.Get(_pageNumber, _pageSize);
 
             return Ok(result);
         }
