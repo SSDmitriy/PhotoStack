@@ -18,5 +18,10 @@ namespace PhotoStack.Application
             await _photoCardsRepository.Add(photoCard);
         }
 
+        //метод вернуть страницу с фотами
+        public async Task<List<PhotoCard>> Get(int pageNumber, int pageSize)
+        {
+            return await _photoCardsRepository.Get(pageNumber, pageSize);
+        }
     }
 }

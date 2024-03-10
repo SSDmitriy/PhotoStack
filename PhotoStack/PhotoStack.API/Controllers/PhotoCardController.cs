@@ -23,7 +23,7 @@ namespace PhotoStack.API.Controllers
         //     throw new Exception();
         // }
 
-        // написать метод в контроллере на получение всех картишок
+        // --написать метод в контроллере на получение всех картинок
         // [HttpGet] по анологии с Create
 
         // написать метод в контроллере на получение одной карточки по Id
@@ -31,19 +31,19 @@ namespace PhotoStack.API.Controllers
 
         // прочитать про FromRoute, FromBody, FromQuery, FromForm
 
-        private readonly string _staticFilesPath = 
+        private readonly string _staticFilesPath =
             Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images");
 
         private readonly IPhotoCardsService _photoCardsService;
 
         public PhotoCardController(IPhotoCardsService photoCardsService)
         {
-           _photoCardsService = photoCardsService;
+            _photoCardsService = photoCardsService;
         }
-        
-        //POST: localhost:5000/photocard
+
+        //POST: https://localhost:7098/PhotoCard
         [HttpPost]
-        public async Task<ActionResult> Create([FromForm]CreatePhotoRequest request)
+        public async Task<ActionResult> Create([FromForm] CreatePhotoRequest request)
         {
             var filePath = await LoadImage(request.Image);
 
@@ -56,7 +56,7 @@ namespace PhotoStack.API.Controllers
 
             PhotoCard photoCard = new(
                 Guid.NewGuid(),
-                request.Title, 
+                request.Title,
                 request.Price,
                 request.Description,
                 image);
@@ -66,25 +66,34 @@ namespace PhotoStack.API.Controllers
             return Created();
         }
 
-        // GET localhost:5000/photocards
-        //[HttpGet]
-        //public async List<PhotoCard> GetPhotocards()
-        //{
-        //    List<PhotoCard> photoCards = new List<PhotoCard>();
+        // GET https://localhost:7098/PhotoCards?page={num}&size={count}
+        // Получение всех картинок
+        [HttpGet]
+        public async Task<ActionResult> Page([FromQuery] GetPhotoCards request)
+        {
+            int _pageNumber = request.pageNumber;
+            int _pageSize = request.pageSize;
 
-        //    foreach (PhotoCard p in photoCards)
-        //    {
-        //        photoCards.Add(p);
-        //    }
+            if (_pageNumber < 0)
+            {
+                return BadRequest("Запрашиваемая страница не может быть меньше 0");
+            }
 
-        //    return photoCards;
-        //}
+            if (_pageSize < 1 || _pageSize > 20)
+            {
+                return BadRequest("Размер запрашиваемой страницы должен быть в пределах 1..20");
+            }
+
+            var result = await _photoCardsService.Get(_pageNumber, _pageSize);
+
+            return Ok(result);
+        }
 
 
         // создать класс ImageHelper и туда вынести логику по загрузке картинки
         private async Task<string?> LoadImage(IFormFile image)
         {
-            try 
+            try
             {
                 var fileExtension = Path.GetExtension(image.FileName);
 
@@ -95,7 +104,7 @@ namespace PhotoStack.API.Controllers
                 await image.CopyToAsync(stream);
 
                 return filePath;
-            } 
+            }
             catch (Exception ex)
             {
                 throw ex;

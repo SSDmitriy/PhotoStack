@@ -43,13 +43,35 @@ namespace PhotoStack.Persistence.Repositories
         }
 
         //получить ВСЕ карточки
-        public async Task<List<PhotoCardEntity>> Get()
+        public async Task<List<PhotoCard>> Get(int pageNumber, int pageSize)
         {
-            var cards = await _photoStackContext.PhotoCards
+            List<PhotoCardEntity> entities = await _photoStackContext.PhotoCards
                 .AsNoTracking()
                 .ToListAsync();
 
-            return cards;
+            var photoCards = new List<PhotoCard>();
+
+            foreach (var entity in entities)
+            {
+                var photoCard = MapToDomainModel(entity);
+                photoCards.Add(photoCard);
+            }
+
+            return photoCards;
+        }
+
+        //маппинг сущностей БД в доменную модель
+        private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity)
+        {
+            var photoCard = new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+
+            photoCard.Id = photoCardEntity.Id;
+            photoCard.Title = photoCardEntity.Title;
+            photoCard.Price = photoCardEntity.Price;
+            photoCard.Description = photoCardEntity.Description;
+            photoCard.Image = new Image("add real filepath");
+
+            return photoCard;
         }
     }
 }

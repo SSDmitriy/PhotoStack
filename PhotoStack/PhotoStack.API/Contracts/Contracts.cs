@@ -5,4 +5,10 @@
         decimal Price,
         string Description,
         IFormFile Image);
+
+    public record GetPhotoCards(
+        int pageNumber,
+        int pageSize
+        );
+
 }
