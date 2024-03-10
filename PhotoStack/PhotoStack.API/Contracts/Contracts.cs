@@ -6,9 +6,11 @@
         string Description,
         IFormFile Image);
 
-    public record GetPhotoCards(
+    public record GetPhotoCardsRequest(
         int pageNumber,
-        int pageSize
-        );
+        int pageSize);
 
+
+    public record GetPhotoCardByIdRequest(
+        Guid id);
 }

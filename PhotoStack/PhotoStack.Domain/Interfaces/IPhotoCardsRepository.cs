@@ -8,6 +8,6 @@ namespace PhotoStack.Domain.Interfaces
     {
         Task Add(PhotoCard photoCard);
         Task<List<PhotoCard>> Get(int pageNumber, int pageSize);
-        //Task<PhotoCardEntity?> GetById(Guid id);
+        Task<PhotoCard> GetById(Guid id);
     }
 }

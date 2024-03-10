@@ -69,7 +69,7 @@ namespace PhotoStack.API.Controllers
         // GET https://localhost:7098/PhotoCards?page={num}&size={count}
         // Получение всех картинок
         [HttpGet]
-        public async Task<ActionResult> Page([FromQuery] GetPhotoCards request)
+        public async Task<ActionResult> Page([FromQuery] GetPhotoCardsRequest request)
         {
             int _pageNumber = request.pageNumber;
             int _pageSize = request.pageSize;
@@ -86,6 +86,17 @@ namespace PhotoStack.API.Controllers
 
             var result = await _photoCardsService.Get(_pageNumber, _pageSize);
 
+            return Ok(result);
+        }
+
+        // GET https://localhost:7098/PhotoCard/{id}
+        // Получение картинки по id
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetById([FromQuery] GetPhotoCardByIdRequest request)
+        {
+            Guid _id = request.id;
+
+            var result = await _photoCardsService.GetById(_id);
             return Ok(result);
         }
 

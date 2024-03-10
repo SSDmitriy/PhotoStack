@@ -32,14 +32,16 @@ namespace PhotoStack.Persistence.Repositories
             await _photoStackContext.SaveChangesAsync();
         }
 
-        public async Task<PhotoCardEntity?> GetById(Guid id)
+        public async Task<PhotoCard> GetById(Guid id)
         {
             //db context --> db set --> method()
-            var card = await _photoStackContext.PhotoCards
-                .AsNoTracking() //НЕ отслеживать средствами EF -для повышения производительности. Т.к. это Get-метод, только запрашивает данные
+            var entity = await _photoStackContext.PhotoCards
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            return card;
+            PhotoCard photoCard = MapToDomainModel(entity);
+
+            return photoCard;
         }
 
         //получить ВСЕ карточки
@@ -63,7 +65,7 @@ namespace PhotoStack.Persistence.Repositories
         //маппинг сущностей БД в доменную модель
         private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity)
         {
-            var photoCard = new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+            var photoCard = GetEmptyCard();
 
             photoCard.Id = photoCardEntity.Id;
             photoCard.Title = photoCardEntity.Title;
@@ -73,6 +75,13 @@ namespace PhotoStack.Persistence.Repositories
 
             return photoCard;
         }
+
+        //вернуть пустую карточку
+        private PhotoCard GetEmptyCard()
+        {
+            return new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+        }       
+
     }
 }
 

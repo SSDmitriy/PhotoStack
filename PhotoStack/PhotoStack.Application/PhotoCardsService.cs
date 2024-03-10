@@ -23,5 +23,11 @@ namespace PhotoStack.Application
         {
             return await _photoCardsRepository.Get(pageNumber, pageSize);
         }
+
+        //метод вернуть фото по id
+        public async Task<PhotoCard> GetById(Guid id)
+        {
+            return await _photoCardsRepository.GetById(id);
+        }
     }
 }
