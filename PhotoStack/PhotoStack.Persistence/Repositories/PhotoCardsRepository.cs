@@ -37,7 +37,8 @@ namespace PhotoStack.Persistence.Repositories
             //db context --> db set --> method()
             var entity = await _photoStackContext.PhotoCards
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id)
+                ?? throw new Exception("Not found");
 
             PhotoCard photoCard = MapToDomainModel(entity);
 
@@ -47,39 +48,31 @@ namespace PhotoStack.Persistence.Repositories
         //получить ВСЕ карточки
         public async Task<List<PhotoCard>> Get(int pageNumber, int pageSize)
         {
-            List<PhotoCardEntity> entities = await _photoStackContext.PhotoCards
+            var entities = await _photoStackContext.PhotoCards
                 .AsNoTracking()
+                .Skip(pageNumber  * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            var photoCards = new List<PhotoCard>();
-
-            foreach (var entity in entities)
-            {
-                var photoCard = MapToDomainModel(entity);
-                photoCards.Add(photoCard);
-            }
+            var photoCards = entities.Select(MapToDomainModel).ToList();
 
             return photoCards;
         }
 
         //маппинг сущностей БД в доменную модель
-        private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity)
-        {
-            var photoCard = GetEmptyCard();
-
-            photoCard.Id = photoCardEntity.Id;
-            photoCard.Title = photoCardEntity.Title;
-            photoCard.Price = photoCardEntity.Price;
-            photoCard.Description = photoCardEntity.Description;
-            photoCard.Image = new Image("add real filepath");
-
-            return photoCard;
-        }
+        private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity) =>
+            PhotoCard.Create(
+                photoCardEntity.Id,
+                photoCardEntity.Title,
+                photoCardEntity.Price,
+                photoCardEntity.Description,
+                new Image("add real filepath")).photoCard!;
 
         //вернуть пустую карточку
         private PhotoCard GetEmptyCard()
         {
-            return new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+            //return new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+            return PhotoCard.Create(Guid.Empty, null, decimal.Zero, null, null).photoCard!;
         }       
 
     }

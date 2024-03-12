@@ -2,21 +2,13 @@
 {
     public class PhotoCard
     {
-        public PhotoCard(
+        private PhotoCard(
             Guid id,
             string title,
             decimal price,
             string? description,
             Image image)
         {
-            // создать валидацию, проверить параметры на пустую строку, на пробелы, на отрицительную цену
-            // в случае ошибки, выбрасывать exception
-
-            // if (price < 0) 
-            // {
-            //     throw new Exception();
-            // }
-
             Id = id;
             Title = title;
             Price = price;
@@ -24,11 +16,27 @@
             Image = image;
         }
 
-        // везде убрать set
-        public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public decimal Price { get; set; } = decimal.Zero;
-        public string? Description { get; set; }
-        public Image Image { get; set; }
+        public Guid Id { get; }
+        public string Title { get; } = string.Empty;
+        public decimal Price { get; } = decimal.Zero;
+        public string? Description { get; }
+        public Image Image { get; }
+
+        public static (PhotoCard? photoCard, Error? error) Create(
+            Guid id,
+            string title,
+            decimal price,
+            string? description,
+            Image image)
+        {
+            if (string.IsNullOrWhiteSpace(title) || title.Length >= 100) // 100 заменить на const
+            {
+                return (null, GeneralErrors.IsInvalid(nameof(title)));
+            }
+
+            var photoCard = new PhotoCard(id, title, price, description, image);
+
+            return (photoCard, null);
+        }
     }
 }
