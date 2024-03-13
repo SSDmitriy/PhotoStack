@@ -6,5 +6,6 @@ namespace PhotoStack.Application
     {
         Task Create(PhotoCard photoCard);
         Task<List<PhotoCard>> Get(int pageNumber, int pageSize);
+        Task<PhotoCard> GetById(Guid id);
     }
 }

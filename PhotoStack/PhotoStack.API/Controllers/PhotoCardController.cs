@@ -45,21 +45,26 @@ namespace PhotoStack.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] CreatePhotoRequest request)
         {
-            var filePath = await LoadImage(request.Image);
+            // var filePath = await LoadImage(request.Image);
 
-            if (filePath == null)
-            {
-                return BadRequest("Не удалось сохранить файл");
-            }
+            // if (filePath == null)
+            // {
+            //     return BadRequest("Не удалось сохранить файл");
+            // }
 
-            var image = new Image(filePath);
+            // var image = new Image(filePath);
 
-            PhotoCard photoCard = new(
+            var (photoCard, error) = PhotoCard.Create(
                 Guid.NewGuid(),
                 request.Title,
-                request.Price,
+                request.Price.Value,
                 request.Description,
-                image);
+                new Image(""));
+
+            if (photoCard is null)
+            {
+                return BadRequest(error);
+            }
 
             await _photoCardsService.Create(photoCard);
 
@@ -69,23 +74,29 @@ namespace PhotoStack.API.Controllers
         // GET https://localhost:7098/PhotoCards?page={num}&size={count}
         // Получение всех картинок
         [HttpGet]
-        public async Task<ActionResult> Page([FromQuery] GetPhotoCards request)
+        public async Task<ActionResult> Page([FromQuery] GetPhotoCardsRequest request)
         {
-            int _pageNumber = request.pageNumber;
-            int _pageSize = request.pageSize;
-
-            if (_pageNumber < 0)
+            if (request.PageNumber < 0)
             {
                 return BadRequest("Запрашиваемая страница не может быть меньше 0");
             }
 
-            if (_pageSize < 1 || _pageSize > 20)
+            if (request.PageSize < 1 || request.PageSize > 20)
             {
                 return BadRequest("Размер запрашиваемой страницы должен быть в пределах 1..20");
             }
 
-            var result = await _photoCardsService.Get(_pageNumber, _pageSize);
+            var result = await _photoCardsService.Get(request.PageNumber, request.PageSize);
 
+            return Ok(result);
+        }
+
+        // GET https://localhost:7098/PhotoCard/{id}
+        // Получение картинки по id
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult> GetById([FromRoute] Guid id)
+        {
+            var result = await _photoCardsService.GetById(id);
             return Ok(result);
         }
 

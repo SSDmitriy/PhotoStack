@@ -32,47 +32,49 @@ namespace PhotoStack.Persistence.Repositories
             await _photoStackContext.SaveChangesAsync();
         }
 
-        public async Task<PhotoCardEntity?> GetById(Guid id)
+        public async Task<PhotoCard> GetById(Guid id)
         {
             //db context --> db set --> method()
-            var card = await _photoStackContext.PhotoCards
-                .AsNoTracking() //НЕ отслеживать средствами EF -для повышения производительности. Т.к. это Get-метод, только запрашивает данные
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var entity = await _photoStackContext.PhotoCards
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id)
+                ?? throw new Exception("Not found");
 
-            return card;
+            PhotoCard photoCard = MapToDomainModel(entity);
+
+            return photoCard;
         }
 
         //получить ВСЕ карточки
         public async Task<List<PhotoCard>> Get(int pageNumber, int pageSize)
         {
-            List<PhotoCardEntity> entities = await _photoStackContext.PhotoCards
+            var entities = await _photoStackContext.PhotoCards
                 .AsNoTracking()
+                .Skip(pageNumber  * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            var photoCards = new List<PhotoCard>();
-
-            foreach (var entity in entities)
-            {
-                var photoCard = MapToDomainModel(entity);
-                photoCards.Add(photoCard);
-            }
+            var photoCards = entities.Select(MapToDomainModel).ToList();
 
             return photoCards;
         }
 
         //маппинг сущностей БД в доменную модель
-        private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity)
+        private PhotoCard MapToDomainModel(PhotoCardEntity photoCardEntity) =>
+            PhotoCard.Create(
+                photoCardEntity.Id,
+                photoCardEntity.Title,
+                photoCardEntity.Price,
+                photoCardEntity.Description,
+                new Image("add real filepath")).photoCard!;
+
+        //вернуть пустую карточку
+        private PhotoCard GetEmptyCard()
         {
-            var photoCard = new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+            //return new PhotoCard(Guid.Empty, null, decimal.Zero, null, null);
+            return PhotoCard.Create(Guid.Empty, null, decimal.Zero, null, null).photoCard!;
+        }       
 
-            photoCard.Id = photoCardEntity.Id;
-            photoCard.Title = photoCardEntity.Title;
-            photoCard.Price = photoCardEntity.Price;
-            photoCard.Description = photoCardEntity.Description;
-            photoCard.Image = new Image("add real filepath");
-
-            return photoCard;
-        }
     }
 }
 
