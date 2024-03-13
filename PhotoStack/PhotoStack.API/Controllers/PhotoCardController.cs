@@ -26,8 +26,6 @@ namespace PhotoStack.API.Controllers
         // --написать метод в контроллере на получение всех картинок
         // [HttpGet] по анологии с Create
 
-        // написать метод в контроллере на получение одной карточки по Id
-        // [HttpGet] по анологии с Create
 
         // прочитать про FromRoute, FromBody, FromQuery, FromForm
 
