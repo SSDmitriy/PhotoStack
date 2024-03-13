@@ -23,8 +23,7 @@ namespace PhotoStack.API.Controllers
         //     throw new Exception();
         // }
 
-        // --написать метод в контроллере на получение всех картинок
-        // [HttpGet] по анологии с Create
+
 
 
         // прочитать про FromRoute, FromBody, FromQuery, FromForm
