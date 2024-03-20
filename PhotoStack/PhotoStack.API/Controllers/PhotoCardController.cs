@@ -23,11 +23,8 @@ namespace PhotoStack.API.Controllers
         //     throw new Exception();
         // }
 
-        // --написать метод в контроллере на получение всех картинок
-        // [HttpGet] по анологии с Create
 
-        // написать метод в контроллере на получение одной карточки по Id
-        // [HttpGet] по анологии с Create
+
 
         // прочитать про FromRoute, FromBody, FromQuery, FromForm
 
@@ -59,7 +56,7 @@ namespace PhotoStack.API.Controllers
                 request.Title,
                 request.Price.Value,
                 request.Description,
-                new Image(""));
+                new Image(_staticFilesPath));
 
             if (photoCard is null)
             {
