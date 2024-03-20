@@ -56,7 +56,7 @@ namespace PhotoStack.API.Controllers
                 request.Title,
                 request.Price.Value,
                 request.Description,
-                new Image(""));
+                new Image(_staticFilesPath));
 
             if (photoCard is null)
             {

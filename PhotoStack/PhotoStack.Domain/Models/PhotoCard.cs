@@ -30,7 +30,7 @@
 
         
         //возвращаемый тип - кортеж (PhotoCard, Error)
-        public static (PhotoCard? photoCard, Error error) Create(
+        public static (PhotoCard? photoCard, Error? error) Create(
             Guid id,
             string title,
             decimal price,
@@ -53,6 +53,10 @@
             //валидация description
             if (description.Length > MAX_DESCRIPTION_LENGTH)
                 return (null, GeneralErrors.LongerThan(nameof(title), MAX_DESCRIPTION_LENGTH));
+
+            //валидация image
+            if(image is null)
+                return (null, GeneralErrors.CannotBeEmpty(nameof(title)));
 
             var photoCard = new PhotoCard(id, title, price, description, image);
 
