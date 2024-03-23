@@ -1,34 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PhotoStack.Persistence.Entities;
+using PhotoStack.Domain.Models;
 
 namespace PhotoStack.Persistence.Configurations
 {
-    public class PhotoCardConfiguration : IEntityTypeConfiguration<PhotoCardEntity>
+    public class PhotoCardConfiguration : IEntityTypeConfiguration<PhotoCard>
     {
-        public void Configure(EntityTypeBuilder<PhotoCardEntity> builder)
+        public void Configure(EntityTypeBuilder<PhotoCard> builder)
         {
+            builder.ToTable("PhotoCards");
+
             builder
                 .HasKey(p => p.Id);
 
             builder
                 .Property(p => p.Title)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(PhotoCard.MAX_TITLE_LENGTH);
 
             builder
                 .Property(p => p.Description)
-                .HasMaxLength(1000);
+                .IsRequired(false)
+                .HasMaxLength(PhotoCard.MAX_DESCRIPTION_LENGTH);
 
             builder
                 .Property(p => p.Price)
                 .IsRequired()
-                .HasDefaultValue(0.1);
+                .HasDefaultValue(PhotoCard.MIN_PRICE);
 
             builder
-                .HasOne(p => p.Image)
-                .WithOne(i => i.PhotoCard)
-                .HasForeignKey<PhotoCardEntity>(p => p.ImageId);
+                .ComplexProperty(p => p.Image, b =>
+                {
+                    b.Property(i => i.FilePath).HasColumnName("FilePath").IsRequired();
+                });
         }
     }
 }

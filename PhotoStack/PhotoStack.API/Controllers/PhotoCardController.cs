@@ -51,19 +51,19 @@ namespace PhotoStack.API.Controllers
 
             // var image = new Image(filePath);
 
-            var (photoCard, error) = PhotoCard.Create(
+            var photoCardResult = PhotoCard.Create(
                 Guid.NewGuid(),
                 request.Title,
-                request.Price.Value,
+                request.Price,
                 request.Description,
                 new Image(_staticFilesPath));
 
-            if (photoCard is null)
+            if (photoCardResult.IsFailure)
             {
-                return BadRequest(error);
+                return BadRequest(photoCardResult.Error);
             }
 
-            await _photoCardsService.Create(photoCard);
+            await _photoCardsService.Create(photoCardResult.Value);
 
             return Created();
         }

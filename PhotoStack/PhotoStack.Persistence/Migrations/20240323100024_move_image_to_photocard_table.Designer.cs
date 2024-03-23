@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PhotoStack.Persistence;
@@ -12,9 +13,11 @@ using PhotoStack.Persistence;
 namespace PhotoStack.Persistence.Migrations
 {
     [DbContext(typeof(PhotoStackContext))]
-    partial class PhotoStackContextModelSnapshot : ModelSnapshot
+    [Migration("20240323100024_move_image_to_photocard_table")]
+    partial class move_image_to_photocard_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

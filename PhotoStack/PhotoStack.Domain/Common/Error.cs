@@ -1,5 +1,4 @@
-﻿
-namespace PhotoStack.Domain.Models
+﻿namespace PhotoStack.Domain.Common
 {
     public record Error(string Message);
 

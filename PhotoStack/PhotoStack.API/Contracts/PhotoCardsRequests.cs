@@ -4,9 +4,9 @@ namespace PhotoStack.API.Contracts
 {
     public record CreatePhotoRequest(
         string Title,
-        decimal? Price,
+        decimal Price,
         string? Description,
-        IFormFile? Image);
+        IFormFile Image);
 
     public record GetPhotoCardsRequest(
         int PageNumber,
